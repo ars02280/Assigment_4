@@ -1,54 +1,34 @@
 package model;
 
-import interfaces.Validatable;
 import interfaces.PricedItem;
-import exception.InvalidInputException;
 
-public abstract class Product extends BaseEntity
-        implements Validatable, PricedItem {
+public abstract class Product implements PricedItem {
+    private int id;
+    private String name;
+    private double price;
+    private Category category;
 
-    protected double price;
-    protected Category category;
-
-    public Product(int id, String name, double price, Category category) {
-        super(id, name);
+    protected Product(int id, String name, double price, Category category) {
+        this.id = id;
+        this.name = name;
         this.price = price;
         this.category = category;
     }
 
+    // ===== ABSTRACT METHODS (обязательно) =====
+    public abstract String getType();
+    public abstract String getDescription();
 
-    public void setId(int id) {
-        this.id = id;
+    // ===== CONCRETE METHOD =====
+    public double applyDiscount(double percent) {
+        return price * (1 - percent / 100);
     }
 
+    // ===== GETTERS / SETTERS =====
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    @Override
-    public void validate() {
-        if (name == null || name.isBlank())
-            throw new InvalidInputException("Empty name");
-        if (price <0)
-            throw new InvalidInputException("Price <= 0");
-        if (category == null)
-            throw new InvalidInputException("Category required");
-    }
-
-    @Override
-    public double getPrice() {
-        return price;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + getId() +
-                ", name='" + getName() + '\'' +
-                ", price=" + price +
-                ", type=" + getType() +
-                ", category=" + category.getName() +
-                '}';
-    }
-
+    public String getName() { return name; }
+    public double getPrice() { return price; }
+    public Category getCategory() { return category; }
 }
