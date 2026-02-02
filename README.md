@@ -19,8 +19,7 @@ Polymorphism is demonstrated when Products are processed via base Product refere
 
 Composition is used:
 Product -> Category
-
-## Interfaces and Advanced Features
+Interfaces and Advanced Features
 Implemented interfaces:
 Validatable<T> – validation logic
 PricedItem – price-related behavior
@@ -44,7 +43,7 @@ PostgreSQL database with related tables:
 - categories
 - products (with foreign key to categories)
 
-#Error Handling
+Error Handling
 Custom exceptions are used:
 - InvalidInputException
 - DuplicateResourceException
@@ -57,6 +56,12 @@ How to Run
 1. Create database and tables using schema.sql
 2. Add PostgreSQL JDBC driver to classpath
 3. Run Main class
+
+Examples of working programm and output:
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/e0bc13eb-b17b-4ec7-aad5-ef7a6ca51f93" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/6e8e3122-9717-4d91-afa4-fd1c13b514ae" />
+
+
 
 Reflection & SOLID Demonstration
 The application demonstrates:
