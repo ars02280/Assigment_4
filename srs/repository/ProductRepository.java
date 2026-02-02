@@ -1,29 +1,27 @@
 package repository;
 
 import config.DatabaseConnection;
-import model.Product;
-import model.Category;
-import model.Game;
-import model.App;
+import model.*;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductRepository {
+public class ProductRepository implements CrudRepository<Product, Integer> {
 
+    @Override
     public Product create(Product product) {
-        String sql = "INSERT INTO products(name, price, type, category_id) VALUES(?, ?, ?, ?) RETURNING id";
+        String sql = """
+            INSERT INTO products(name, price, type, category_id)
+            VALUES (?, ?, ?, ?) RETURNING id
+        """;
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, product.getName());
             stmt.setDouble(2, product.getPrice());
-            stmt.setString(3, product.getType());          // <- вот сюда
+            stmt.setString(3, product.getType());
             stmt.setInt(4, product.getCategory().getId());
 
             ResultSet rs = stmt.executeQuery();
@@ -38,31 +36,14 @@ public class ProductRepository {
         }
     }
 
-
-
-    public void update(Product product) {
-        String sql = "UPDATE products SET name = ?, price = ?, category_id = ? WHERE id = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, product.getName());
-            stmt.setDouble(2, product.getPrice());
-            stmt.setInt(3, product.getCategory().getId());
-            stmt.setInt(4, product.getId());  // <-- тут
-
-            stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
+    @Override
     public List<Product> getAll() {
-        String sql = "SELECT p.id, p.name, p.price, p.type, c.id as cat_id, c.name as cat_name " +
-                "FROM products p " +
-                "JOIN categories c ON p.category_id = c.id";
+        String sql = """
+            SELECT p.id, p.name, p.price, p.type,
+                   c.id as cat_id, c.name as cat_name
+            FROM products p
+            JOIN categories c ON p.category_id = c.id
+        """;
 
         List<Product> list = new ArrayList<>();
 
@@ -77,14 +58,13 @@ public class ProductRepository {
                 );
 
                 Product p;
-
-                if (rs.getString("type").equals("GAME")) {
+                if ("GAME".equals(rs.getString("type"))) {
                     p = new Game(
                             rs.getInt("id"),
                             rs.getString("name"),
                             rs.getDouble("price"),
                             cat,
-                            "Unknown" // genre
+                            "Unknown"
                     );
                 } else {
                     p = new App(
@@ -92,7 +72,7 @@ public class ProductRepository {
                             rs.getString("name"),
                             rs.getDouble("price"),
                             cat,
-                            true // isPaid
+                            true
                     );
                 }
 
@@ -106,12 +86,39 @@ public class ProductRepository {
         }
     }
 
+    @Override
+    public Product getById(Integer id) {
+        return getAll().stream()
+                .filter(p -> p.getId() == id)
+                .findFirst()
+                .orElse(null);
+    }
 
+    @Override
+    public void update(Product product) {
+        String sql = """
+            UPDATE products
+            SET name = ?, price = ?, category_id = ?
+            WHERE id = ?
+        """;
 
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
+            stmt.setString(1, product.getName());
+            stmt.setDouble(2, product.getPrice());
+            stmt.setInt(3, product.getCategory().getId());
+            stmt.setInt(4, product.getId());
 
+            stmt.executeUpdate();
 
-    public void delete(int id) {
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void delete(Integer id) {
         String sql = "DELETE FROM products WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -124,5 +131,4 @@ public class ProductRepository {
             throw new RuntimeException(e);
         }
     }
-
 }

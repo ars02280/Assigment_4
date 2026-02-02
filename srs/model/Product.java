@@ -1,8 +1,6 @@
 package model;
 
-import interfaces.PricedItem;
-
-public abstract class Product implements PricedItem {
+public abstract class Product implements PricedItem  {
     private int id;
     private String name;
     private double price;
@@ -15,16 +13,16 @@ public abstract class Product implements PricedItem {
         this.category = category;
     }
 
-    // ===== ABSTRACT METHODS (обязательно) =====
+    // abstract methods (полиморфизм)
     public abstract String getType();
     public abstract String getDescription();
 
-    // ===== CONCRETE METHOD =====
+    // concrete method
     public double applyDiscount(double percent) {
         return price * (1 - percent / 100);
     }
 
-    // ===== GETTERS / SETTERS =====
+    // encapsulation
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 

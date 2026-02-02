@@ -1,6 +1,7 @@
 package service;
 
 import model.Product;
+import interfaces.Validatable;
 import repository.ProductRepository;
 
 import java.util.List;

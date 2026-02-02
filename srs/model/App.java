@@ -1,39 +1,20 @@
 package model;
 
 public class App extends Product {
+    private boolean paid;
 
-    private boolean offlineMode;
-
-    public App(int id, String name, double price, Category category, boolean offlineMode) {
+    public App(int id, String name, double price, Category category, boolean paid) {
         super(id, name, price, category);
-        this.offlineMode = offlineMode;
-    }
-
-    @Override
-    public void validate() {
-        super.validate();
+        this.paid = paid;
     }
 
     @Override
     public String getType() {
         return "APP";
     }
+
     @Override
     public String getDescription() {
-        return "App: " + getName();
+        return "App: " + getName() + ", paid=" + paid;
     }
-
-
-    @Override
-    public String toString() {
-        return "App{" +
-                "id=" + getId() +
-                ", name='" + getName() + '\'' +
-                ", price=" + price +
-                ", category=" + getCategory().getName() +
-                '}';
-    }
-
 }
-
-
