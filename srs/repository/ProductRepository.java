@@ -28,7 +28,6 @@ public class ProductRepository implements CrudRepository<Product, Integer> {
             if (rs.next()) {
                 product.setId(rs.getInt("id"));
             }
-
             return product;
 
         } catch (SQLException e) {
@@ -40,7 +39,7 @@ public class ProductRepository implements CrudRepository<Product, Integer> {
     public List<Product> getAll() {
         String sql = """
             SELECT p.id, p.name, p.price, p.type,
-                   c.id as cat_id, c.name as cat_name
+                   c.id AS cat_id, c.name AS cat_name
             FROM products p
             JOIN categories c ON p.category_id = c.id
         """;
@@ -75,10 +74,8 @@ public class ProductRepository implements CrudRepository<Product, Integer> {
                             true
                     );
                 }
-
                 list.add(p);
             }
-
             return list;
 
         } catch (SQLException e) {
